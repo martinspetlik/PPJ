@@ -26,7 +26,7 @@ public class CountryDaoTests {
     private CountryDao countryDao;
 
     @Test
-    public void testUsers() {
+    public void testCountries() {
 
         countryDao.deleteCountries();
 

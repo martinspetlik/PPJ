@@ -49,7 +49,7 @@ public class TownDaoTests {
     public void Test2_listTowns() {
 
         List<Town> towns = townDao.getTowns();
-        // Get the offer with ID filled in.
+        // Get the town with ID filled in.
         Town town = towns.get(0);
 
         assertEquals("Should be one town in database.", 1, towns.size());
@@ -86,7 +86,7 @@ public class TownDaoTests {
         assertTrue("Town creation should return true", townDao.create(town2));
 
         List<Town> towns = townDao.getTowns();
-        assertEquals("Should be two towns for user.", 2, towns.size());
+        assertEquals("Should be two towns.", 2, towns.size());
 
         List<Town> secondList = townDao.getTowns();
         System.out.println(secondList);
@@ -99,19 +99,19 @@ public class TownDaoTests {
     }
 
     @Test
-    public void Test5_deleteOffer() {
+    public void Test5_deleteTown() {
 
-        List<Town> offers = townDao.getTowns();
+        List<Town> towns = townDao.getTowns();
 
-        // Get the offer with ID filled in.
-        Town town = offers.get(0);
+        // Get the towns with ID filled in.
+        Town town = towns.get(0);
 
         // Test deletion
         townDao.delete(town.getId());
 
         List<Town> finalList = townDao.getTowns();
 
-        assertEquals("Offers lists should contain one offer.", 1, finalList.size());
+        assertEquals("Town lists should contain one town.", 1, finalList.size());
     }
 
 }
