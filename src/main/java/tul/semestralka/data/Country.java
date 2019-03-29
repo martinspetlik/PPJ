@@ -1,9 +1,21 @@
 package tul.semestralka.data;
 
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
+
+
+@Entity
+@Table(name = "country")
 public class Country {
 
+    @Column(name ="title")
     private String title;
+
+    @Id
+    @Column(name ="code")
     private Integer code;
 
 

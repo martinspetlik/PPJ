@@ -1,10 +1,25 @@
 package tul.semestralka.data;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "town")
 public class Town {
+    @Id
+    @GeneratedValue
     private int id;
 
+    @Column(name = "name")
     private String name;
 
+
+
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="code")
     private Country country;
 
     public Town() {

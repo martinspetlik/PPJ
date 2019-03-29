@@ -1,19 +1,35 @@
 package tul.semestralka;
 
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import tul.semestralka.data.Country;
 import tul.semestralka.data.CountryDao;
+import tul.semestralka.data.Town;
 import tul.semestralka.data.TownDao;
-import tul.semestralka.provisioning.Provisioner;
 
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @SpringBootApplication
+@EnableTransactionManagement
+@EntityScan("tul.semestralka.data")
 public class Main {
+
+    @Autowired
+    EntityManagerFactory entityManagerFactory;
+
+    @Bean
+    public SessionFactory sessionFactory() {
+        return entityManagerFactory.unwrap(SessionFactory.class);
+    }
 
     @Bean
     public TownDao townDao() {
@@ -25,11 +41,6 @@ public class Main {
         return new CountryDao();
     }
 
-    @Profile({"devel", "test"})
-    @Bean(initMethod = "doProvision")
-    public Provisioner provisioner() {
-        return new Provisioner();
-    }
 
     public static void main(String[] args) throws Exception {
 
@@ -38,15 +49,18 @@ public class Main {
 
         CountryDao countryDao = ctx.getBean(CountryDao.class);
 
-        Country country = new Country("test", 1235674);
+        Country country = new Country("test", 17);
         countryDao.create(country);
+
+        TownDao townDao = ctx.getBean(TownDao.class);
+
+        Town town = new Town("test", country);
+        townDao.create(town);
 
         List<Country> countries = countryDao.getAllCountries();
         System.out.println(countries);
 
-        //SpringApplication.run(Main.class, args);
-
-
     }
 
 }
+

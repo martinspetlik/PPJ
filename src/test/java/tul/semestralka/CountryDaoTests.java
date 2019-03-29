@@ -1,11 +1,9 @@
 package tul.semestralka;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tul.semestralka.data.Country;
@@ -16,10 +14,10 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@SpringBootTest
+
 @RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = {Main.class})
 @ActiveProfiles({"test"})
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CountryDaoTests {
 
     @Autowired

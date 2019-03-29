@@ -5,10 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 import tul.semestralka.data.Country;
 import tul.semestralka.data.CountryDao;
 import tul.semestralka.data.Town;
@@ -21,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles({"test"})
+@SpringApplicationConfiguration(classes = {Main.class})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@SpringBootTest
 public class TownDaoTests {
 
     @Autowired
@@ -35,7 +34,7 @@ public class TownDaoTests {
     @Test
     public void Test1_createTown() {
 
-        Country country = new Country("This is a test town.", 123);
+        Country country = new Country("This is a test country.", 123);
 
         assertTrue("Country creation should return true", countryDao.create(country));
 
@@ -68,6 +67,8 @@ public class TownDaoTests {
         town.setName("test");
         assertTrue("Town update should return true", townDao.update(town));
 
+        List<Town> towns_2 = townDao.getTowns();
+
         Town updated = townDao.getTown(town.getId());
 
         assertEquals("Updated town should match retrieved updated town", town, updated);
@@ -86,6 +87,7 @@ public class TownDaoTests {
         assertTrue("Town creation should return true", townDao.create(town2));
 
         List<Town> towns = townDao.getTowns();
+        
         assertEquals("Should be two towns.", 2, towns.size());
 
         List<Town> secondList = townDao.getTowns();

@@ -1,42 +1,54 @@
 package tul.semestralka.data;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
+@Transactional
 public class CountryDao {
 
     @Autowired
-    private NamedParameterJdbcOperations jdbc;
+    private SessionFactory sessionFactory;
 
-    @Transactional
-    public boolean create(Country country) {
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-
-        params.addValue("title", country.getTitle());
-        params.addValue("code", country.getCode());
-
-        return jdbc.update("insert into country " +
-                "(title, code) " +
-                "values (:title, :code)", params) == 1;
+    public Session session() {
+        return sessionFactory.getCurrentSession();
     }
 
-    public boolean exists(String title) {
-        return jdbc.queryForObject("select count(*) from country where title=:title",
-                new MapSqlParameterSource("title", title), Integer.class) > 0;
+    public boolean create(Country country) {
+            boolean success = false;
+            try {
+                // obtaining session is omitted
+                session().save(country);
+                success = true;
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+
+            }
+            return success;
+    }
+
+    public boolean exists(String name) {
+        Criteria crit = session().createCriteria(Country.class);
+
+        crit.add(Restrictions.eq("title", name));
+        Country cou = (Country) crit.uniqueResult();
+        return cou != null;
     }
 
     public List<Country> getAllCountries() {
-        return jdbc.query("select * from country", BeanPropertyRowMapper.newInstance(Country.class));
+        //return session().createQuery("from User").list();
+        Criteria crit = session().createCriteria(Country.class);
+        return crit.list();
     }
 
     public void deleteCountries() {
-        jdbc.getJdbcOperations().execute("DELETE FROM town");
-        jdbc.getJdbcOperations().execute("DELETE FROM country");
+        session().createQuery("delete from Country").executeUpdate();
     }
 }
