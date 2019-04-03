@@ -1,45 +1,72 @@
 package tul.semestralka;
 
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tul.semestralka.data.Country;
-import tul.semestralka.data.CountryDao;
+import tul.semestralka.service.CountryService;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
 @ActiveProfiles({"test"})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CountryDaoTests {
 
     @Autowired
-    private CountryDao countryDao;
+    private CountryService countryService;
+
+
+    private Country country1 = new Country("zeme 1 ", 123);
+    private Country country2 = new Country("zeme 2 ", 456);
+    private Country country3 = new Country("zeme 3 ", 789);
+    private Country country4 = new Country("zeme 4 ", 147);
+
+
+    @Before
+    public void init() {
+        countryService.deleteCountries();
+    }
+
 
     @Test
-    public void testCountries() {
+    public void testCreateRetrieve() {
+        countryService.create(country1);
 
-        countryDao.deleteCountries();
+        List<Country> countries1 = countryService.getAllCountries();
 
-        Country country = new Country("test", 123);
+        System.out.println(countries1);
 
-        assertTrue("Country creation should return true", countryDao.create(country));
+        assertEquals("One country should have been created and retrieved", 1, countries1.size());
 
-        List<Country> countries = countryDao.getAllCountries();
+        assertEquals("Inserted country should match retrieved", country1, countries1.get(0));
 
-        assertEquals("Number of countries should be 1.", 1,countries.size());
+        countryService.create(country2);
+        countryService.create(country3);
+        countryService.create(country4);
 
-        assertTrue("Country should exist.", countryDao.exists(country.getTitle()));
+        List<Country> countries2 = countryService.getAllCountries();
 
-        assertEquals("Created country should be identical to retrieved country",
-                country, countries.get(0));
+        assertEquals("Should be four retrieved countries.", 4, countries2.size());
+    }
 
+    @Test
+    public void testExists() {
+        countryService.create(country1);
+        countryService.create(country2);
+        countryService.create(country3);
+
+        assertTrue("Country should exist.", countryService.exists(country2.getTitle()));
+        assertFalse("Country should not exist.", countryService.exists("xkjhsfjlsjf"));
     }
 }
