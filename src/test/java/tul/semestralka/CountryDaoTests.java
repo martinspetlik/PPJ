@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import tul.semestralka.data.Country;
@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
+@SpringBootTest(classes = {Main.class})
 @ActiveProfiles({"test"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CountryDaoTests {
@@ -26,11 +26,10 @@ public class CountryDaoTests {
     @Autowired
     private CountryService countryService;
 
-
-    private Country country1 = new Country("zeme 1 ", 123);
-    private Country country2 = new Country("zeme 2 ", 456);
-    private Country country3 = new Country("zeme 3 ", 789);
-    private Country country4 = new Country("zeme 4 ", 147);
+    private Country country1 = new Country("Czech Republic", "cz");
+    private Country country2 = new Country("Slovakia", "sk");
+    private Country country3 = new Country("Hungary");
+    private Country country4 = new Country("Poland");
 
 
     @Before

@@ -1,6 +1,9 @@
 package tul.semestralka.data;
 
 import javax.persistence.*;
+import com.neovisionaries.i18n.CountryCode;
+
+import java.sql.SQLOutput;
 
 
 @Entity
@@ -12,16 +15,29 @@ public class Country {
 
     @Id
     @Column(name ="code")
-    private Integer code;
+    private String code;
 
 
     public Country() {
 
     }
 
-    public Country(String title, Integer code) {
+    public Country(String title) {
         this.title = title;
-        this.code = code;
+        this.code = this.getCode(title);
+    }
+
+    public Country(String title, String code) {
+        this.title = title;
+
+        if (code.equals(this.getCode(title))){
+            this.code = code;
+        } else {
+
+            System.out.println("Country code is not valid ISO 3166 code " + code);
+            System.out.println("ISO code " + this.getCode(title));
+        }
+
     }
 
     public String getTitle() {
@@ -32,12 +48,17 @@ public class Country {
         this.title = title;
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
+    }
+
+    private String getCode(String title)
+    {
+        return CountryCode.findByName(title).get(0).toString().toLowerCase();
     }
 
     @Override

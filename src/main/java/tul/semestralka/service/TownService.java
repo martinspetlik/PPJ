@@ -30,8 +30,8 @@ public class TownService {
     }
 
 
-    public void delete(int id) {
-        townRepository.delete(id);
+    public void delete(Town town) {
+        townRepository.delete(town);
     }
 
     public void deleteTowns() {
@@ -39,7 +39,7 @@ public class TownService {
     }
 
     public Town getTown(Integer id) {
-        return townRepository.findOne(id);
+        return townRepository.findById(id).orElse(null);
     }
 
     public List<Town> getTownsByCountry(Country country) {

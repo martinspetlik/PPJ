@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "town")
 public class Town {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name")
@@ -20,14 +20,13 @@ public class Town {
     @JoinColumn(name="code")
     private Country country;
 
-    public Town() {
-
-    }
 
     public Town(String name, Country country) {
         this.name = name;
         this.country = country;
     }
+
+    public Town(){}
 
     public Town(int id, Country country, String name) {
         this.id = id;
@@ -89,6 +88,5 @@ public class Town {
     public String toString() {
         return "Town [id=" + id + ", name=" + name + ", country=" + country + "]";
     }
-
 
 }

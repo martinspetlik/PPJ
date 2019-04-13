@@ -27,6 +27,10 @@ public class CountryService {
         return StreamSupport.stream(countryRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
+    public Country getCountry(String code) {
+        return countryRepository.findById(code).orElse(null);
+    }
+
     public void deleteCountries() {
         countryRepository.deleteAll();
     }

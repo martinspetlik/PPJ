@@ -1,5 +1,6 @@
 package tul.semestralka;
 
+import org.springframework.boot.test.context.SpringBootTest;
 import tul.semestralka.data.Town;
 import tul.semestralka.data.Country;
 import tul.semestralka.service.TownService;
@@ -8,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
+@SpringBootTest(classes = {Main.class})
 @ActiveProfiles({"test"})
 public class TownDaoTests {
 
@@ -27,13 +27,10 @@ public class TownDaoTests {
     @Autowired
     private CountryService countryService;
 
-    private Country country1 = new Country("zeme 1 ", 123);
-    private Country country2 = new Country("zeme 2 ", 456);
-    private Country country3 = new Country("zeme 3 ", 789);
-    private Country country4 = new Country("zeme 4 ", 147);
-
-
-
+    private Country country1 = new Country("Czech Republic", "cz");
+    private Country country2 = new Country("Poland", "pl");
+    private Country country3 = new Country("Slovakia");
+    private Country country4 = new Country("Austria");
 
     private Town town1 = new Town("mesto 1 ", country1);
     private Town town2 = new Town("mesto 2 ", country1);
@@ -43,12 +40,10 @@ public class TownDaoTests {
     private Town town6 = new Town("mesto 5 ", country3);
     private Town town7 = new Town("mesto 5 ", country4);
 
-
     @Before
     public void init() {
         countryService.deleteCountries();
     }
-
 
     @Test
     public void testDelete() {
@@ -66,7 +61,7 @@ public class TownDaoTests {
         Town retrieved1 = townService.getTown(town2.getId());
         assertNotNull("Town with ID " + retrieved1.getId() + " should not be null (deleted, actual)", retrieved1);
 
-        townService.delete(town2.getId());
+        townService.delete(town2);
 
         Town retrieved2 = townService.getTown(town2.getId());
         assertNull("Town with ID " + retrieved1.getId() + " should be null (deleted, actual)", retrieved2);
