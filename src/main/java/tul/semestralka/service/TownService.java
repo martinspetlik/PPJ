@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 import tul.semestralka.data.Town;
 import tul.semestralka.data.Country;
 import org.springframework.beans.factory.annotation.Autowired;
+import tul.semestralka.data.Weather;
 import tul.semestralka.repositories.TownRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -16,6 +18,9 @@ public class TownService {
 
     @Autowired
     private TownRepository townRepository;
+
+    @Autowired
+    private MongoWeatherService mongoWeatherService;
 
     public void create(Town town) {
         townRepository.save(town);
@@ -70,5 +75,40 @@ public class TownService {
         }
 
         return towns;
+    }
+
+    public List<Town> getTownsByCountryCode(String code, boolean addLastWeather) {
+
+        if (code.isEmpty()) {
+            return null;
+        }
+
+        List<Town> towns = townRepository.getByCountryCode(code);
+
+        if (towns.size() == 0) {
+            return null;
+        }
+
+
+        // All lists with weather
+        ArrayList<Town> townsWithWeather = new ArrayList<Town>();
+
+        // Add weather to town
+        for (Town town : towns)
+        {
+            if (addLastWeather) {
+                // Weather measurements for town, sort ASC
+                List<Weather> townWeathers = mongoWeatherService.findByTownId(town.getId());
+
+                if (townWeathers.size() == 0) {
+                    continue;
+                }
+
+                town.setLastWeather(townWeathers.get(0));
+
+                townsWithWeather.add(town);
+            }
+        }
+        return townsWithWeather;
     }
 }

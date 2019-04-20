@@ -17,4 +17,10 @@ public interface TownRepository extends CrudRepository<Town, Integer> {
 
     @Query("select t from Town t WHERE t.country=:country")
     List<Town> findByCountry(@Param("country") Country country);
+
+    @Query("select t from Town as t where country.code=:code")
+    List<Town> getByCountryCode(@Param("code") String code);
+
+    @Query("select distinct t.country from Town as t")
+    List<Country> getCountriesWithTown();
 }

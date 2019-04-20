@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Towns</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>
+                <span th:if="${townsData != null and townsData.size() > 0}" th:text="${townsData.get(0).country.title + ' towns'}">
+                    Towns</span>
+
+            </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th> Town </th>
+                    <th> Temperature </th>
+                    <th> Pressure </th>
+                    <th> Humidity </th>
+                    <th> Wind speed </th>
+                    <th> Wind deg </th>
+                    <th> Time </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${townsData == null or townsData.empty}">
+                    <td colspan="2"> No Towns Available </td>
+                </tr>
+                <tr th:each="town : ${townsData}">
+                    <td><span th:text="${town.name}"> Town </span></td>
+                    <td><span th:text="${town.lastWeather.temp}"> Temperature </span></td>
+                    <td><span th:text="${town.lastWeather.pressure}"> Pressure </span></td>
+                    <td><span th:text="${town.lastWeather.humidity}"> Humidity </span></td>
+                    <td><span th:text="${town.lastWeather.windSpeed}"> Wind speed </span></td>
+                    <td><span th:text="${town.lastWeather.windDegree}"> Wind deg </span></td>
+                    <td><span th:text="${town.lastWeather.formattedTime()}"> Time </span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -16,6 +16,4 @@ public interface CountryRepository extends CrudRepository<Country, String> {
     @Query(value = "SELECT c FROM Country c WHERE c.title=:title")
     public List<Country> existsByTitle(@Param("title") String title);
 
-
-
 }

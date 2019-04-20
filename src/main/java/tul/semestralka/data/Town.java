@@ -20,6 +20,8 @@ public class Town {
     @JoinColumn(name="code")
     private Country country;
 
+    @Transient
+    private Weather lastWeather;
 
     public Town(String name, Country country) {
         this.name = name;
@@ -62,6 +64,14 @@ public class Town {
         return country.getTitle();
     }
 
+    public void setLastWeather(Weather lastWeather) {
+        this.lastWeather = lastWeather;
+    }
+
+    public Weather getLastWeather() {
+        return lastWeather;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -83,6 +93,7 @@ public class Town {
             return false;
         return true;
     }
+
 
     @Override
     public String toString() {

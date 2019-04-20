@@ -3,8 +3,6 @@ package tul.semestralka.data;
 import javax.persistence.*;
 import com.neovisionaries.i18n.CountryCode;
 
-import java.sql.SQLOutput;
-
 
 @Entity
 @Table(name = "country")
@@ -24,18 +22,18 @@ public class Country {
 
     public Country(String title) {
         this.title = title;
-        this.code = this.getCode(title);
+        this.code = this.getCodeFromTitle(title);
     }
 
     public Country(String title, String code) {
         this.title = title;
 
-        if (code.equals(this.getCode(title))){
+        if (code.equals(this.getCodeFromTitle(title))){
             this.code = code;
         } else {
 
             System.out.println("Country code is not valid ISO 3166 code " + code);
-            System.out.println("ISO code " + this.getCode(title));
+            System.out.println("ISO code " + this.getCodeFromTitle(title));
         }
 
     }
@@ -56,7 +54,7 @@ public class Country {
         this.code = code;
     }
 
-    private String getCode(String title)
+    private String getCodeFromTitle(String title)
     {
         return CountryCode.findByName(title).get(0).toString().toLowerCase();
     }
@@ -88,6 +86,4 @@ public class Country {
     public String toString() {
         return "Country [title=" + title + ", code=" + code + "]";
     }
-
-
 }

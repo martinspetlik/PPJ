@@ -1,12 +1,10 @@
 package tul.semestralka.service;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import tul.semestralka.data.Weather;
-
-
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -45,8 +43,12 @@ public class MongoWeatherService implements WeatherService{
     }
 
     public List<Weather> findByTownId(Integer townId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("townId").is(townId));
-        return mongo.find(query, Weather.class);
+        Sort sort = new Sort(Sort.Direction.ASC, "time");
+        return mongo.find(Query.query(where("townId").is(townId)).with(sort), Weather.class);
+    }
+
+    public void update(Weather weather)
+    {
+        mongo.save(weather);
     }
 }

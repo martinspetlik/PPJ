@@ -14,6 +14,9 @@ import tul.semestralka.service.MongoWeatherService;
 import tul.semestralka.service.TownService;
 import tul.semestralka.service.WeatherService;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -39,19 +42,17 @@ public class Main {
         List<Country> countries = countryService.getAllCountries();
         System.out.println(countries);
 
-//        Country c1 = countryService.getCountry("cz");
-//        Town t1 = new Town("Brno", c1);
-//        countryService.create(c1);
-//        townService.create(t1);
-//
-//
-//        MongoWeatherService weatherService = context.getBean(MongoWeatherService.class);
-//
-//        Weather w = new Weather(10, 1.5, 110, 75);
-//
-//        //weatherService.add(w);
-//        System.out.println(weatherService.findByTownId(w.getTownId()).get(0).getHumidity());
+        Country c1 = new Country("Slovakia", "sk");
+        Town t1 = new Town("Bratislava", c1);
+        countryService.create(c1);
+        townService.create(t1);
 
+        MongoWeatherService weatherService = context.getBean(MongoWeatherService.class);
+
+        Weather w = new Weather(t1.getId(), (float) 20.5, (float)1.5, (float)110, (float)75,(float) 10, ZonedDateTime.now());
+
+        weatherService.add(w);
+        System.out.println(weatherService.findByTownId(w.getTownId()).get(0).getHumidity());
 
     }
 }

@@ -2,8 +2,14 @@ package tul.semestralka.data;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 
 @Document(collection = "weather")
 public class Weather {
@@ -14,24 +20,34 @@ public class Weather {
     private int townId;
 
     private double temp;
-    private int pressure;
-    private int humidity;
-    private int windSpeed;
-    private long time;
-
+    private float pressure;
+    private float humidity;
+    private float windSpeed;
+    private float windDegree;
+    private ZonedDateTime time;
 
     public Weather(){
 
     }
-    public Weather(int townId) {
-        this.townId = townId;
-    }
 
-    public Weather(int townId, double temp, int pressure, int humidity) {
+    public Weather(int townId, float temp, float pressure, float humidity, float windSpeed, float windDegree) {
         this.townId = townId;
         this.temp = temp;
         this.pressure = pressure;
         this.humidity = humidity;
+        this.windDegree = windDegree;
+        this.windSpeed = windSpeed;
+        this.time = ZonedDateTime.now();
+    }
+
+    public Weather(int townId, float temp, float pressure, float humidity, float windSpeed, float windDegree, ZonedDateTime time) {
+        this.townId = townId;
+        this.temp = temp;
+        this.pressure = pressure;
+        this.humidity = humidity;
+        this.windDegree = windDegree;
+        this.windSpeed = windSpeed;
+        this.time = time;
     }
 
     public double getTemp() {
@@ -42,7 +58,7 @@ public class Weather {
         this.temp = temp;
     }
 
-    public int getPressure() {
+    public float getPressure() {
         return pressure;
     }
 
@@ -50,7 +66,7 @@ public class Weather {
         this.pressure = pressure;
     }
 
-    public int getHumidity() {
+    public float getHumidity() {
         return humidity;
     }
 
@@ -58,12 +74,20 @@ public class Weather {
         this.humidity = humidity;
     }
 
-    public int getWindSpeed() {
+    public float getWindSpeed() {
         return windSpeed;
     }
 
     public void setWindSpeed(int windSpeed) {
         this.windSpeed = windSpeed;
+    }
+
+    public float getWindDegree() {
+        return windDegree;
+    }
+
+    public void setWindDegree(float windDegree) {
+        this.windDegree = windDegree;
     }
 
     public int getTownId() {
@@ -74,11 +98,11 @@ public class Weather {
         this.townId = townId;
     }
 
-    public long getTime() {
+    public ZonedDateTime getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(ZonedDateTime time) {
         this.time = time;
     }
 
@@ -88,6 +112,24 @@ public class Weather {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "[townId=" + townId + "," +
+                "temp=" + temp + "," +
+                "pressure=" + pressure + "," +
+                "humidity=" + humidity + "," +
+                "windSpeed=" + windSpeed + "," +
+                "windDegree=" + windDegree + "," +
+                "time=" + time + "]";
+    }
+
+
+    public String formattedTime()
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z");
+        return time.format(formatter);
     }
 
 }
