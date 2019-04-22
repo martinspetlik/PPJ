@@ -1,5 +1,6 @@
 package tul.semestralka.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -21,6 +22,7 @@ public class Town {
     private Country country;
 
     @Transient
+    @JsonIgnore
     private Weather lastWeather;
 
     public Town(String name, Country country) {
@@ -58,10 +60,6 @@ public class Town {
 
     public void setCountry(Country country) {
         this.country = country;
-    }
-
-    public String getCountryTitle() {
-        return country.getTitle();
     }
 
     public void setLastWeather(Weather lastWeather) {

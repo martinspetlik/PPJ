@@ -1,5 +1,6 @@
 package tul.semestralka;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import tul.semestralka.converter.ZonedDateTimeReadConverter;
 import tul.semestralka.converter.ZonedDateTimeWriteConverter;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,5 +30,4 @@ public class MongoConfig {
 
         return new MongoCustomConversions(converters);
     }
-
 }

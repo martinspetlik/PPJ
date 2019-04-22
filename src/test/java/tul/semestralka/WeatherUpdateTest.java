@@ -41,7 +41,7 @@ public class WeatherUpdateTest {
 
         System.out.println("weathers " +  weathers);
 
-        System.out.println("received city " + received);
+        System.out.println("received town " + received);
         assertNotNull("Should not be null", received);
         assertNotEquals("Should not min float value", 0f, received.getMainWeather().getTemp());
     }

@@ -1,12 +1,15 @@
 package tul.semestralka.data;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
+import java.util.List;
 
 
 @Entity
 @Table(name = "country")
-public class Country {
+public class Country{
 
     @Column(name ="title")
     private String title;
@@ -14,7 +17,6 @@ public class Country {
     @Id
     @Column(name ="code")
     private String code;
-
 
     public Country() {
 
@@ -51,12 +53,14 @@ public class Country {
     }
 
     public void setCode(String code) {
+        if (!code.equals(getCodeFromTitle(title))) {
+            code = getCodeFromTitle(title);
+        }
         this.code = code;
     }
 
-    private String getCodeFromTitle(String title)
-    {
-        return CountryCode.findByName(title).get(0).toString().toLowerCase();
+    public void generateCode() {
+        this.code = getCodeFromTitle(title);
     }
 
     @Override
@@ -85,5 +89,17 @@ public class Country {
     @Override
     public String toString() {
         return "Country [title=" + title + ", code=" + code + "]";
+    }
+
+    public String getCodeFromTitle(String title)
+    {
+        List<CountryCode> possibleCodes = CountryCode.findByName(title);
+
+        if (possibleCodes.size() > 0) {
+            return possibleCodes.get(0).toString().toLowerCase();
+        }
+        else {
+            return null;
+        }
     }
 }

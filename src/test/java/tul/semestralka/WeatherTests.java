@@ -1,20 +1,16 @@
 package tul.semestralka;
 
-import ch.qos.logback.core.status.InfoStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import tul.semestralka.data.Weather;
+import tul.semestralka.data.WeatherAverage;
 import tul.semestralka.service.MongoWeatherService;
-import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -24,43 +20,23 @@ import static org.junit.Assert.*;
 @ActiveProfiles({"test"})
 public class WeatherTests {
 
-    private MongoWeatherService weatherService;
-
     @Autowired
-    private MongoTemplate mongo;
-
-    @Bean
-    public MongoWeatherService weatherService() {
-        return new MongoWeatherService(mongo);
-    }
-
-//    private Instant t1 = Instant.now();
-//    private Instant t2 = t1.plusSeconds(100);
-//    private Instant t3 = t1.plusSeconds(600);
-//    private Instant t4 = t1.plusSeconds(2000);
-
-//    private Date t1 = new Date();
-//    private Date t2 = new Date(t1.getTime() + 10 * 1000);
-//    private Date t3 = new Date(t1.getTime() + 20 * 1000);
-//    private Date t4 = new Date(t1.getTime() + 15 * 1000);
+    public MongoWeatherService weatherService;
 
     private ZonedDateTime t1 = ZonedDateTime.now();
     private ZonedDateTime t2 = ZonedDateTime.now();
     private ZonedDateTime t3 = ZonedDateTime.now();
     private ZonedDateTime t4 = ZonedDateTime.now();
-//    private Date t2 = new Date(t1.getTime() + 10 * 1000);
-//    private Date t3 = new Date(t1.getTime() + 20 * 1000);
-//    private Date t4 = new Date(t1.getTime() + 15 * 1000);
 
-    private Weather weather1 = new Weather(1, (float)280.5, (float)1050, (float)57, (float)10, (float)25.6, t1);
-    private Weather weather2 = new Weather(1, (float)285.5, (float)950, (float)59, (float)8, (float)180.1, t2);
-    private Weather weather3 = new Weather(1, (float)300.7, (float)1108, (float)75, (float)15.5, (float)125.6, t3);
-    private Weather weather4 = new Weather(1, (float)112.75, (float)1250, (float)85, (float)7.8, (float)180, t4);
-
+    private Weather weather1 = new Weather(1, (float)11.7, (float)1050, (float)57, (float)9.9, (float)25.6, t1);
+    private Weather weather2 = new Weather(1, (float)20.3, (float)950, (float)59, (float)8.1, (float)179.3, t2);
+    private Weather weather3 = new Weather(1, (float)10, (float)1108, (float)76, (float)15, (float)125.1, t3);
+    private Weather weather4 = new Weather(2, (float)8.1, (float)1250, (float)85, (float)7.8, (float)180, t4);
+    private Weather weather5 = new Weather(1, (float)2, (float)892, (float)48, (float)7, (float)50, t3.minusDays(2));
+    private Weather weather6 = new Weather(1, (float)11, (float)400, (float)60, (float)15, (float)125, t3.minusDays(8));
 
     @Before
     public void init() {
-        weatherService = new MongoWeatherService(mongo);
         weatherService.removeAll();
     }
 
@@ -87,7 +63,92 @@ public class WeatherTests {
         weatherService.add(weather2);
         weatherService.add(weather3);
         weatherService.add(weather4);
-        Weather latestWeather = weatherService.findByTownId(weather4.getTownId()).get(0);
+        Weather latestWeather = weatherService.findByTownId(weather1.getTownId()).get(0);
         assertEquals(latestWeather.getTime(), weather1.getTime());
+    }
+
+    @Test
+    public void TestAverageWeatherDay(){
+        double delta = 0.0001;
+        weatherService.add(weather1);
+        weatherService.add(weather2);
+        weatherService.add(weather3);
+        weatherService.add(weather4);
+        weatherService.add(weather5);
+        weatherService.add(weather6);
+
+        WeatherAverage avgWeather = weatherService.getAverage(1, "day");
+        assertEquals(14, avgWeather.getTempAvg(), delta);
+        assertEquals(1036, avgWeather.getPressureAvg(), delta);
+        assertEquals(64, avgWeather.getHumidityAvg(), delta);
+        assertEquals(110, avgWeather.getWindDegreeAvg(), delta);
+        assertEquals(11, avgWeather.getWindSpeedAvg(), delta);
+
+        WeatherAverage avgWeather2 = weatherService.getAverage(2, "day");
+        assertEquals(8.1, avgWeather2.getTempAvg(), delta);
+        assertEquals(1250, avgWeather2.getPressureAvg(), delta);
+        assertEquals(85, avgWeather2.getHumidityAvg(), delta);
+        assertEquals(180, avgWeather2.getWindDegreeAvg(), delta);
+        assertEquals(7.8, avgWeather2.getWindSpeedAvg(), delta);
+    }
+
+    @Test
+    public void TestAverageWeatherDayErr(){
+        weatherService.add(weather5);
+        weatherService.add(weather6);
+        WeatherAverage avgWeather = weatherService.getAverage(1, "day");
+        assertEquals(null, avgWeather);
+    }
+
+
+    @Test
+    public void TestAverageWeatherWeek() {
+        double delta = 0.0001;
+        weatherService.add(weather1);
+        weatherService.add(weather2);
+        weatherService.add(weather3);
+        weatherService.add(weather4);
+        weatherService.add(weather5);
+        weatherService.add(weather6);
+
+        WeatherAverage avgWeather = weatherService.getAverage(1, "week");
+        assertEquals(11, avgWeather.getTempAvg(), delta);
+        assertEquals(1000, avgWeather.getPressureAvg(), delta);
+        assertEquals(60, avgWeather.getHumidityAvg(), delta);
+        assertEquals(95, avgWeather.getWindDegreeAvg(), delta);
+        assertEquals(10, avgWeather.getWindSpeedAvg(), delta);
+
+        WeatherAverage avgWeather2 = weatherService.getAverage(2, "week");
+        assertEquals(8.1, avgWeather2.getTempAvg(), delta);
+        assertEquals(1250, avgWeather2.getPressureAvg(), delta);
+        assertEquals(85, avgWeather2.getHumidityAvg(), delta);
+        assertEquals(180, avgWeather2.getWindDegreeAvg(), delta);
+        assertEquals(7.8, avgWeather2.getWindSpeedAvg(), delta);
+    }
+
+    @Test
+    public void TestAverageWeatherFortnight() {
+        double delta = 0.0001;
+        weatherService.add(weather1);
+        weatherService.add(weather2);
+        weatherService.add(weather3);
+        weatherService.add(weather4);
+        weatherService.add(weather5);
+        weatherService.add(weather6);
+
+        WeatherAverage avgWeather = weatherService.getAverage(1, "fortnight");
+        assertEquals(11, avgWeather.getTempAvg(), delta);
+        assertEquals(880, avgWeather.getPressureAvg(), delta);
+        assertEquals(60, avgWeather.getHumidityAvg(), delta);
+        assertEquals(101, avgWeather.getWindDegreeAvg(), delta);
+        assertEquals(11, avgWeather.getWindSpeedAvg(), delta);
+
+
+        WeatherAverage avgWeather2 = weatherService.getAverage(2, "fortnight");
+        assertEquals(8.1, avgWeather2.getTempAvg(), delta);
+        assertEquals(1250, avgWeather2.getPressureAvg(), delta);
+        assertEquals(85, avgWeather2.getHumidityAvg(), delta);
+        assertEquals(180, avgWeather2.getWindDegreeAvg(), delta);
+        assertEquals(7.8, avgWeather2.getWindSpeedAvg(), delta);
     }
 }

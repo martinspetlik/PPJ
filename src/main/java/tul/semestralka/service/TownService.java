@@ -23,7 +23,9 @@ public class TownService {
     private MongoWeatherService mongoWeatherService;
 
     public void create(Town town) {
-        townRepository.save(town);
+        if (!exists(town)) {
+            townRepository.save(town);
+        }
     }
 
     public List<Town> getTowns() {
@@ -34,6 +36,17 @@ public class TownService {
         townRepository.save(town);
     }
 
+    public boolean exists(Town town) {
+        if (town == null)
+        {
+            return false;
+        }
+        if (town.getCountry() != null) {
+            return townRepository.existsByName(town.getName()) && townRepository.existsByCountry_Code(town.getCountry().getCode());
+        } else {
+            return townRepository.existsByName(town.getName());
+        }
+    }
 
     public void delete(Town town) {
         townRepository.delete(town);
@@ -97,14 +110,14 @@ public class TownService {
         for (Town town : towns)
         {
             if (addLastWeather) {
-                // Weather measurements for town, sort ASC
-                List<Weather> townWeathers = mongoWeatherService.findByTownId(town.getId());
+                // Actual weather
+                Weather townWeathers = mongoWeatherService.getActual(town.getId());
 
-                if (townWeathers.size() == 0) {
+                if (townWeathers == null) {
                     continue;
                 }
 
-                town.setLastWeather(townWeathers.get(0));
+                town.setLastWeather(townWeathers);
 
                 townsWithWeather.add(town);
             }

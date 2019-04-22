@@ -15,8 +15,7 @@ public class MainWeather {
     @JsonProperty("humidity")
     private float humidity;
 
-    public MainWeather() {
-    }
+    public MainWeather() {}
 
     public float getTemp() {
         return temp;

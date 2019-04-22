@@ -65,7 +65,7 @@ public class CountryDaoTests {
         countryService.create(country2);
         countryService.create(country3);
 
-        assertTrue("Country should exist.", countryService.exists(country2.getTitle()));
-        assertFalse("Country should not exist.", countryService.exists("xkjhsfjlsjf"));
+        assertTrue("Country should exist.", countryService.exists(country2));
+        assertFalse("Country should not exist.", countryService.exists(country4));
     }
 }

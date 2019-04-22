@@ -1,29 +1,42 @@
 package tul.semestralka.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.Instant;
-import java.time.ZoneOffset;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 
 @Document(collection = "weather")
 public class Weather {
 
     @Id
+    @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
-
     private int townId;
-
-    private double temp;
+    @Min(value=-274)
+    @Max(value=200)
+    private float temp;
+    @Min(value=0)
+    @Max(value=100000)
     private float pressure;
+    @Min(value=0)
+    @Max(value=100)
     private float humidity;
+    @Min(value=0)
+    @Max(value=100000)
     private float windSpeed;
+    @Min(value=-360)
+    @Max(value=360)
     private float windDegree;
+    @JsonSerialize(using= ToStringSerializer.class)
     private ZonedDateTime time;
 
     public Weather(){
@@ -50,11 +63,11 @@ public class Weather {
         this.time = time;
     }
 
-    public double getTemp() {
+    public float getTemp() {
         return temp;
     }
 
-    public void setTemp(double temp) {
+    public void setTemp(float temp) {
         this.temp = temp;
     }
 
@@ -62,7 +75,7 @@ public class Weather {
         return pressure;
     }
 
-    public void setPressure(int pressure) {
+    public void setPressure(float pressure) {
         this.pressure = pressure;
     }
 
@@ -70,7 +83,7 @@ public class Weather {
         return humidity;
     }
 
-    public void setHumidity(int humidity) {
+    public void setHumidity(float humidity) {
         this.humidity = humidity;
     }
 
@@ -78,7 +91,7 @@ public class Weather {
         return windSpeed;
     }
 
-    public void setWindSpeed(int windSpeed) {
+    public void setWindSpeed(float windSpeed) {
         this.windSpeed = windSpeed;
     }
 
@@ -116,7 +129,8 @@ public class Weather {
 
     @Override
     public String toString() {
-        return "[townId=" + townId + "," +
+        return "[id=" + id +  ", " +
+                "townId=" + townId + "," +
                 "temp=" + temp + "," +
                 "pressure=" + pressure + "," +
                 "humidity=" + humidity + "," +
@@ -131,5 +145,4 @@ public class Weather {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z");
         return time.format(formatter);
     }
-
 }
