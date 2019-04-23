@@ -33,7 +33,9 @@ public class TownService {
     }
 
     public void saveOrUpdate(Town town) {
-        townRepository.save(town);
+        if (exists(town)) {
+            townRepository.save(town);
+        }
     }
 
     public boolean exists(Town town) {

@@ -12,6 +12,7 @@ import tul.semestralka.data.WeatherAverage;
 import tul.semestralka.repositories.WeatherRepository;
 
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,8 +31,8 @@ public class MongoWeatherService implements WeatherService{
 
     @Override
     public void add(Weather weather) {
+        weather.setInsertTime(new Date());
         weatherRepository.insert(weather);
-        //return weather;
     }
 
     public List<Weather> getAll()

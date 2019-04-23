@@ -1,5 +1,6 @@
 package tul.semestralka;
 
+import com.google.common.util.concurrent.RateLimiter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,6 @@ import tul.semestralka.data.Country;
 import tul.semestralka.data.Town;
 import tul.semestralka.data.Weather;
 import tul.semestralka.service.MongoWeatherService;
-
-import java.sql.SQLOutput;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -34,15 +33,11 @@ public class WeatherUpdateTest {
 
         Country country1 = new Country("Czech Republic", "cz");
         Town town1 = new Town("Prague", country1);
-
-        WeatherApi received = weatherUpdateService.updateWeather(town1);
-
+        RateLimiter rt = RateLimiter.create(1);
+        WeatherApi received = weatherUpdateService.updateWeather(town1, rt);
         List<Weather> weathers =  mongoService.getAll();
-
-        System.out.println("weathers " +  weathers);
-
-        System.out.println("received town " + received);
         assertNotNull("Should not be null", received);
         assertNotEquals("Should not min float value", 0f, received.getMainWeather().getTemp());
+        assertEquals(1, weathers.size());
     }
 }

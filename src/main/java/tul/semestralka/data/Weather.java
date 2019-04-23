@@ -1,9 +1,11 @@
 package tul.semestralka.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.Valid;
@@ -12,6 +14,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 
 @Document(collection = "weather")
@@ -36,8 +39,21 @@ public class Weather {
     @Min(value=-360)
     @Max(value=360)
     private float windDegree;
-    @JsonSerialize(using= ToStringSerializer.class)
+
+    @JsonSerialize(using=ToStringSerializer.class)
     private ZonedDateTime time;
+
+    public Date getInsertTime() {
+        return insertTime;
+    }
+
+    public void setInsertTime(Date insertTime) {
+        this.insertTime = insertTime;
+    }
+
+    // TTL_index failed for ZonedDateTime
+    @JsonIgnore
+    private Date insertTime;// = new Date();
 
     public Weather(){
 

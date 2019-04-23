@@ -14,11 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tul.semestralka.data.Country;
 import tul.semestralka.data.Town;
 import tul.semestralka.service.CountryService;
-
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-
 import java.util.Arrays;
 import java.util.List;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
