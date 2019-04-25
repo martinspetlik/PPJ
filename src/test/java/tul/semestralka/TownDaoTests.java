@@ -51,12 +51,12 @@ public class TownDaoTests {
         countryService.create(country2);
         countryService.create(country3);
         countryService.create(country4);
-        townService.saveOrUpdate(town2);
-        townService.saveOrUpdate(town3);
-        townService.saveOrUpdate(town4);
-        townService.saveOrUpdate(town5);
-        townService.saveOrUpdate(town6);
-        townService.saveOrUpdate(town7);
+        townService.create(town2);
+        townService.create(town3);
+        townService.create(town4);
+        townService.create(town5);
+        townService.create(town6);
+        townService.create(town7);
 
         Town retrieved1 = townService.getTown(town2.getId());
         assertNotNull("Town with ID " + retrieved1.getId() + " should not be null (deleted, actual)", retrieved1);
@@ -73,13 +73,13 @@ public class TownDaoTests {
         countryService.create(country2);
         countryService.create(country3);
         countryService.create(country4);
-        townService.saveOrUpdate(town1);
-        townService.saveOrUpdate(town2);
-        townService.saveOrUpdate(town3);
-        townService.saveOrUpdate(town4);
-        townService.saveOrUpdate(town5);
-        townService.saveOrUpdate(town6);
-        townService.saveOrUpdate(town7);
+        townService.create(town1);
+        townService.create(town2);
+        townService.create(town3);
+        townService.create(town4);
+        townService.create(town5);
+        townService.create(town6);
+        townService.create(town7);
 
         Town retrieved1 = townService.getTown(town1.getId());
         assertEquals("Towns should match", town1, retrieved1);
@@ -93,7 +93,7 @@ public class TownDaoTests {
         countryService.create(country3);
         countryService.create(country4);
 
-        townService.saveOrUpdate(town1);
+        townService.create(town1);
 
         List<Town> towns1 = townService.getTowns();
         assertEquals("Should be one town.", 1, towns1.size());
@@ -101,12 +101,12 @@ public class TownDaoTests {
         assertEquals("Retrieved town should equal inserted town.", town1,
                 towns1.get(0));
 
-        townService.saveOrUpdate(town2);
-        townService.saveOrUpdate(town3);
-        townService.saveOrUpdate(town4);
-        townService.saveOrUpdate(town5);
-        townService.saveOrUpdate(town6);
-//        townService.saveOrUpdate(town7);
+        townService.create(town2);
+        townService.create(town3);
+        townService.create(town4);
+        townService.create(town5);
+        townService.create(town6);
+        townService.create(town7);
 
         List<Town> towns2 = townService.getTowns();
         assertEquals("Should be six towns for enabled countries.", 6,
@@ -120,15 +120,15 @@ public class TownDaoTests {
         countryService.create(country2);
         countryService.create(country3);
         countryService.create(country4);
-        townService.saveOrUpdate(town2);
-        townService.saveOrUpdate(town3);
-        townService.saveOrUpdate(town4);
-        townService.saveOrUpdate(town5);
-        townService.saveOrUpdate(town6);
-        townService.saveOrUpdate(town7);
+        townService.create(town2);
+        townService.create(town3);
+        townService.create(town4);
+        townService.create(town5);
+        townService.create(town6);
+        townService.create(town7);
 
         town3.setName("New town name");
-        townService.saveOrUpdate(town3);
+        townService.create(town3);
 
         Town retrieved = townService.getTown(town3.getId());
         assertEquals("Retrieved town should be updated.", town3, retrieved);
@@ -141,13 +141,13 @@ public class TownDaoTests {
         countryService.create(country3);
         countryService.create(country4);
 
-        townService.saveOrUpdate(town1);
-        townService.saveOrUpdate(town2);
-        townService.saveOrUpdate(town3);
-        townService.saveOrUpdate(town4);
-        townService.saveOrUpdate(town5);
-        townService.saveOrUpdate(town6);
-        townService.saveOrUpdate(town7);
+        townService.create(town1);
+        townService.create(town2);
+        townService.create(town3);
+        townService.create(town4);
+        townService.create(town5);
+        townService.create(town6);
+        townService.create(town7);
 
         List<Town> towns1 = townService.getTownsByCountry(country2);
         assertEquals("Should be three towns for this town.", 1, towns1.size());

@@ -44,7 +44,7 @@ public class TownWriteRestController extends TownRestController{
             Message m = new Message("Town does not exist");
             return new ResponseEntity<>(m, HttpStatus.BAD_REQUEST);
         }
-        townService.saveOrUpdate(town);
+        townService.update(town);
         changedTown = townService.getTown(town.getId());
         Message m = new Message("Changed town:" + changedTown);
         return new ResponseEntity<>(m, HttpStatus.OK);

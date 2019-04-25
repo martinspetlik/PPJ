@@ -32,7 +32,7 @@ public class TownService {
         return StreamSupport.stream(townRepository.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
-    public void saveOrUpdate(Town town) {
+    public void update(Town town) {
         if (exists(town)) {
             townRepository.save(town);
         }
