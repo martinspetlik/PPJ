@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.RateLimiter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,7 +27,7 @@ public class WeatherUpdateTest {
     private DownloadWeatherService weatherUpdateService;
 
     @Autowired
-    private MongoWeatherService mongoService;
+    public MongoWeatherService weatherService;
 
     @Test
     public void testApi() {
@@ -35,7 +36,7 @@ public class WeatherUpdateTest {
         Town town1 = new Town("Prague", country1);
         RateLimiter rt = RateLimiter.create(1);
         WeatherApi received = weatherUpdateService.updateWeather(town1, rt);
-        List<Weather> weathers =  mongoService.getAll();
+        List<Weather> weathers =  weatherService.getAll();
         assertNotNull("Should not be null", received);
         assertNotEquals("Should not min float value", 0f, received.getMainWeather().getTemp());
         assertEquals(1, weathers.size());

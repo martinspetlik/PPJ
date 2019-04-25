@@ -9,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import tul.semestralka.api.data.WeatherApi;
 import tul.semestralka.data.Town;
 import tul.semestralka.data.Weather;
+import tul.semestralka.service.MongoWeatherService;
 import tul.semestralka.service.TownService;
-import tul.semestralka.service.WeatherService;
 import java.util.List;
 
 
@@ -20,7 +20,7 @@ public class DownloadWeatherService {
     private RestTemplate restTemplate;
 
     @Autowired
-    private WeatherService weatherService;
+    private MongoWeatherService weatherService;
 
     @Autowired
     private TownService townService;

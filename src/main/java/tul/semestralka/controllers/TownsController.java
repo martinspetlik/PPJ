@@ -21,6 +21,6 @@ public class TownsController {
         List<Town> towns =  townService.getTownsByCountryCode(countryName, true);
 
         model.addAttribute("townsData", towns);
-        return "/towns";
+        return "towns";
     }
 }

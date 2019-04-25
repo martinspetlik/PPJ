@@ -3,7 +3,6 @@ package tul.semestralka.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tul.semestralka.data.Country;
-import tul.semestralka.data.Town;
 import tul.semestralka.repositories.CountryRepository;
 import tul.semestralka.repositories.TownRepository;
 
@@ -31,10 +30,6 @@ public class CountryService {
     public boolean exists(Country country) {
         return (countryRepository.existsByTitle(country.getTitle()) || countryRepository.existsByCode(country.getCode()));
     }
-
-//    public boolean exists(String code) {
-//        return countryRepository.existsByCode(code);
-//    }
 
     public List<Country> getAllCountries() {
         return StreamSupport.stream(countryRepository.findAll().spliterator(), false).collect(Collectors.toList());

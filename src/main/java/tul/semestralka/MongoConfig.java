@@ -1,25 +1,27 @@
 package tul.semestralka;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.UncategorizedMongoDbException;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.index.Index;
+import tul.semestralka.api.service.DownloadWeatherService;
 import tul.semestralka.converter.ZonedDateTimeReadConverter;
 import tul.semestralka.converter.ZonedDateTimeWriteConverter;
 import tul.semestralka.data.Weather;
+import tul.semestralka.service.MongoWeatherService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Configuration
-public class MongoConfig {
+public class MongoConfig{
 
     private List<Converter<?,?>> converters = new ArrayList<Converter<?,?>>();
 
@@ -27,7 +29,7 @@ public class MongoConfig {
     private int expiration;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private MongoWeatherService weatherService;
 
     @Bean
     public MongoCustomConversions customConversions() {
@@ -37,12 +39,20 @@ public class MongoConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(value = "readOnlyMode", matchIfMissing=true, havingValue="false")
+    public DownloadWeatherService scheduledJob() {
+        return new DownloadWeatherService();
+    }
+
+
+    @Bean
+    @ConditionalOnProperty(value = "tests", matchIfMissing=true, havingValue="false")
     public void afterPropertiesSet() {
         try {
-            mongoTemplate.indexOps(Weather.class).ensureIndex(new Index().on("insertTime", Sort.Direction.ASC).expire(expiration).named("TTL_INDEX"));
+            weatherService.mongoTemplate.indexOps(Weather.class).ensureIndex(new Index().on("insertTime", Sort.Direction.ASC).expire(expiration).named("TTL_INDEX"));
         } catch (UncategorizedMongoDbException e) {
-            mongoTemplate.indexOps(Weather.class).dropIndex("TTL_INDEX");
-            mongoTemplate.indexOps(Weather.class).ensureIndex(new Index().on("insertTime", Sort.Direction.ASC).expire(expiration).named("TTL_INDEX"));
+            weatherService.mongoTemplate.indexOps(Weather.class).dropIndex("TTL_INDEX");
+            weatherService.mongoTemplate.indexOps(Weather.class).ensureIndex(new Index().on("insertTime", Sort.Direction.ASC).expire(expiration).named("TTL_INDEX"));
         }
     }
 }

@@ -20,7 +20,7 @@ public class TownService {
     private TownRepository townRepository;
 
     @Autowired
-    private MongoWeatherService mongoWeatherService;
+    private MongoWeatherService weatherService;
 
     public void create(Town town) {
         if (!exists(town)) {
@@ -113,7 +113,7 @@ public class TownService {
         {
             if (addLastWeather) {
                 // Actual weather
-                Weather townWeathers = mongoWeatherService.getActual(town.getId());
+                Weather townWeathers = weatherService.getActual(town.getId());
 
                 if (townWeathers == null) {
                     continue;

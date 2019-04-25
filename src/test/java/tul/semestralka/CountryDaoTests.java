@@ -44,10 +44,7 @@ public class CountryDaoTests {
 
         List<Country> countries1 = countryService.getAllCountries();
 
-        System.out.println(countries1);
-
         assertEquals("One country should have been created and retrieved", 1, countries1.size());
-
         assertEquals("Inserted country should match retrieved", country1, countries1.get(0));
 
         countryService.create(country2);

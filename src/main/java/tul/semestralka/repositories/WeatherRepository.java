@@ -1,18 +1,16 @@
 package tul.semestralka.repositories;
 
 import org.bson.types.ObjectId;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Component;
 import tul.semestralka.data.Weather;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
+@Component
 public interface WeatherRepository extends MongoRepository<Weather, ObjectId> {
 
     List<Weather> findByTime(Long time, Pageable pageable);
@@ -25,6 +23,6 @@ public interface WeatherRepository extends MongoRepository<Weather, ObjectId> {
 
     boolean existsByTimeAndTownId(ZonedDateTime time, Integer townId);
 
-    Weather findFirstByTownIdOrderByTimeAsc(Integer townId);
+    Weather findFirstByTownIdOrderByTimeDesc(Integer townId);
 
 }

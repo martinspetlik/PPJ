@@ -1,5 +1,6 @@
 package tul.semestralka.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +17,25 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class MongoWeatherService implements WeatherService{
+public class MongoWeatherService{
 
     @Autowired
-    public WeatherRepository weatherRepository;
+    private WeatherRepository weatherRepository;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    public MongoTemplate mongoTemplate;
 
-    @Override
+    @Value("${weather.expiration}")
+    private int expiration;
+
+    @Autowired
+    public MongoWeatherService(){}
+
     public Weather find(ObjectId objectId) {
         return weatherRepository.findById(objectId).orElse(null);
     }
 
-    @Override
+
     public void add(Weather weather) {
         weather.setInsertTime(new Date());
         weatherRepository.insert(weather);
@@ -40,7 +46,7 @@ public class MongoWeatherService implements WeatherService{
         return weatherRepository.findAll();
     }
 
-    @Override
+
     public void remove(Weather weather) {
         weatherRepository.delete(weather);
     }
@@ -71,7 +77,7 @@ public class MongoWeatherService implements WeatherService{
     }
 
     public Weather getActual(Integer townId) {
-        return weatherRepository.findFirstByTownIdOrderByTimeAsc(townId);
+        return weatherRepository.findFirstByTownIdOrderByTimeDesc(townId);
     }
 
     public WeatherAverage getAverage(Integer townId, String period) {

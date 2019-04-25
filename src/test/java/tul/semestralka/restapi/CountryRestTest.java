@@ -34,7 +34,6 @@ public class CountryRestTest extends RestTest {
     @MockBean
     private CountryService countryService;
 
-
     private Country country1 = new Country("Czech Republic", "cz");
     private Country country2 = new Country("Slovakia", "sk");
     private Country country3 = new Country("Hungary");

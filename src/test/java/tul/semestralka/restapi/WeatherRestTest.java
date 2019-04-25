@@ -18,8 +18,6 @@ import tul.semestralka.data.Weather;
 import tul.semestralka.data.WeatherAverage;
 import tul.semestralka.service.MongoWeatherService;
 import tul.semestralka.service.TownService;
-
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 

@@ -2,7 +2,6 @@ package tul.semestralka.data;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
 import java.util.List;
 
