@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.ZonedDateTime;
@@ -17,26 +18,26 @@ import java.util.Date;
 public class Weather {
 
     @Id
-    @JsonSerialize(using= ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     private int townId;
-    @Min(value=-274)
-    @Max(value=200)
+    @Min(value = -274)
+    @Max(value = 200)
     private float temp;
-    @Min(value=0)
-    @Max(value=100000)
+    @Min(value = 0)
+    @Max(value = 100000)
     private float pressure;
-    @Min(value=0)
-    @Max(value=100)
+    @Min(value = 0)
+    @Max(value = 100)
     private float humidity;
-    @Min(value=0)
-    @Max(value=100000)
+    @Min(value = 0)
+    @Max(value = 100000)
     private float windSpeed;
-    @Min(value=-360)
-    @Max(value=360)
+    @Min(value = -360)
+    @Max(value = 360)
     private float windDegree;
 
-    @JsonSerialize(using=ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     private ZonedDateTime time;
 
     public Date getInsertTime() {
@@ -49,9 +50,9 @@ public class Weather {
 
     // TTL_index failed for ZonedDateTime
     @JsonIgnore
-    private Date insertTime;// = new Date();
+    private Date insertTime;// = new Date()
 
-    public Weather(){
+    public Weather() {
 
     }
 
@@ -141,7 +142,7 @@ public class Weather {
 
     @Override
     public String toString() {
-        return "[id=" + id +  ", " +
+        return "[id=" + id + ", " +
                 "townId=" + townId + "," +
                 "temp=" + temp + "," +
                 "pressure=" + pressure + "," +
@@ -152,8 +153,7 @@ public class Weather {
     }
 
 
-    public String formattedTime()
-    {
+    public String formattedTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss z");
         return time.format(formatter);
     }

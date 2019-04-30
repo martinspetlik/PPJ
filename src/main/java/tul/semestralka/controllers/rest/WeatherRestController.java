@@ -20,7 +20,4 @@ public class WeatherRestController {
     final String ACT_WEATHER_PATH = "/api/actual-weather";
     final String AVG_WEATHER_PATH = "/api/average-weather";
 
-
-
-
 }

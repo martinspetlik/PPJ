@@ -58,12 +58,12 @@ public class TownDaoTests {
         townService.create(town6);
         townService.create(town7);
 
-        Town retrieved1 = townService.getTown(town2.getId());
+        Town retrieved1 = townService.getTownById(town2.getId());
         assertNotNull("Town with ID " + retrieved1.getId() + " should not be null (deleted, actual)", retrieved1);
 
         townService.delete(town2);
 
-        Town retrieved2 = townService.getTown(town2.getId());
+        Town retrieved2 = townService.getTownById(town2.getId());
         assertNull("Town with ID " + retrieved1.getId() + " should be null (deleted, actual)", retrieved2);
     }
 
@@ -81,7 +81,7 @@ public class TownDaoTests {
         townService.create(town6);
         townService.create(town7);
 
-        Town retrieved1 = townService.getTown(town1.getId());
+        Town retrieved1 = townService.getTownById(town1.getId());
         assertEquals("Towns should match", town1, retrieved1);
 
     }
@@ -130,7 +130,7 @@ public class TownDaoTests {
         town3.setName("New town name");
         townService.create(town3);
 
-        Town retrieved = townService.getTown(town3.getId());
+        Town retrieved = townService.getTownById(town3.getId());
         assertEquals("Retrieved town should be updated.", town3, retrieved);
     }
 

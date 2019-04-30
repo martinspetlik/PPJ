@@ -10,7 +10,7 @@ import tul.semestralka.data.Country;
 import java.util.List;
 
 @RestController
-public class CountryReadController extends CountryRestController{
+public class CountryReadController extends CountryRestController {
     @GetMapping(value = COUNTRIES_PATH)
     public ResponseEntity<List<Country>> getCountries() {
         List<Country> countries = countryService.getAllCountries();

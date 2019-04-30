@@ -12,9 +12,15 @@ import java.util.List;
 public interface TownRepository extends CrudRepository<Town, Integer> {
 
     List<Town> findByName(String name);
+
     List<Town> findByCountry(Country country);
+
+    Town getByNameAndCountry(String name, Country country);
+
     List<Town> getByCountryCode(String code);
+
     boolean existsByCountry_Code(String code);
+
     boolean existsByName(String name);
 
     @Query("select distinct t.country from Town as t")

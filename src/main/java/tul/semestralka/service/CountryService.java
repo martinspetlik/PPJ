@@ -23,7 +23,6 @@ public class CountryService {
         if (country.getCode() == null) {
             country.generateCode();
         }
-
         countryRepository.save(country);
     }
 
@@ -51,9 +50,10 @@ public class CountryService {
         return StreamSupport.stream(townRepository.getCountriesWithTown().spliterator(), false).collect(Collectors.toList());
     }
 
-    public boolean validData(Country country)
-    {
-        return (country.getCodeFromTitle(country.getTitle()) != null);
+    // exist code for country name
+    public boolean existsCodeForCountryName(Country country) {
+        String code = country.getCodeFromTitle(country.getTitle());
+        return (!code.isEmpty() && code != null);
     }
 
     public void update(Country country) {

@@ -13,7 +13,7 @@ public class CountriesController {
     @Autowired
     private CountryService countryService;
 
-    @GetMapping ("")
+    @GetMapping("")
     public String countries(Model model) {
         model.addAttribute("countries", countryService.getCountriesWithTown());
         return "index";

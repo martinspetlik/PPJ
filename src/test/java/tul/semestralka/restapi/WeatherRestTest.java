@@ -18,6 +18,7 @@ import tul.semestralka.data.Weather;
 import tul.semestralka.data.WeatherAverage;
 import tul.semestralka.service.MongoWeatherService;
 import tul.semestralka.service.TownService;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -50,10 +51,10 @@ public class WeatherRestTest extends RestTest {
     private ZonedDateTime t3 = ZonedDateTime.now();
     private ZonedDateTime t4 = ZonedDateTime.now();
 
-    private Weather weather1 = new Weather(1, (float)80.5, (float)1050, (float)57, (float)10, (float)25.6, t1);
-    private Weather weather2 = new Weather(2, (float)85.5, (float)950, (float)59, (float)8, (float)180.1, t2);
-    private Weather weather3 = new Weather(3, (float)30.7, (float)1108, (float)75, (float)15.5, (float)125.6, t3);
-    private Weather weather4 = new Weather(4, (float)12.75, (float)1250, (float)85, (float)7.8, (float)180, t4);
+    private Weather weather1 = new Weather(1, (float) 80.5, (float) 1050, (float) 57, (float) 10, (float) 25.6, t1);
+    private Weather weather2 = new Weather(2, (float) 85.5, (float) 950, (float) 59, (float) 8, (float) 180.1, t2);
+    private Weather weather3 = new Weather(3, (float) 30.7, (float) 1108, (float) 75, (float) 15.5, (float) 125.6, t3);
+    private Weather weather4 = new Weather(4, (float) 12.75, (float) 1250, (float) 85, (float) 7.8, (float) 180, t4);
 
 
     @Test
@@ -93,7 +94,7 @@ public class WeatherRestTest extends RestTest {
                 .andExpect(status().isBadRequest());
 
         weather2.setId(new ObjectId());
-        String request=objectToJson(weather2);
+        String request = objectToJson(weather2);
         given(weatherService.exists(any())).willReturn(true);
         mockMvc.perform(post("/api/weather")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,9 +102,9 @@ public class WeatherRestTest extends RestTest {
                 .andExpect(status().isBadRequest());
 
         weather4.setId(new ObjectId());
-        String request1=objectToJson(weather4);
+        String request1 = objectToJson(weather4);
         given(weatherService.exists(any())).willReturn(false);
-        given(townService.getTown(any())).willReturn(null);
+        given(townService.getTownById(any())).willReturn(null);
         mockMvc.perform(post("/api/weather")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request1))
@@ -113,8 +114,8 @@ public class WeatherRestTest extends RestTest {
         given(weatherService.exists(any())).willReturn(false);
         Country c = new Country("test", "test");
         Town t = new Town("test ", c);
-        given(townService.getTown(any())).willReturn(t);
-        String request2=objectToJson(weather3);
+        given(townService.getTownById(any())).willReturn(t);
+        String request2 = objectToJson(weather3);
         mockMvc.perform(post("/api/weather")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request2))
@@ -145,9 +146,9 @@ public class WeatherRestTest extends RestTest {
 
 
     @Test
-    public void testUpdateWeather() throws Exception{
+    public void testUpdateWeather() throws Exception {
         given(townService.getTown(any())).willReturn(null);
-        String requestJson=objectToJson(weather1);
+        String requestJson = objectToJson(weather1);
         mockMvc.perform(put("/api/weather")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
@@ -157,9 +158,9 @@ public class WeatherRestTest extends RestTest {
         //weather2.setId(new ObjectId());
         Country c = new Country("test", "test");
         Town t = new Town("test ", c);
-        given(townService.getTown(any())).willReturn(t);
+        given(townService.getTownById(any())).willReturn(t);
         given(weatherService.find(any())).willReturn(weather2);
-        String requestJson2=objectToJson(weather2);
+        String requestJson2 = objectToJson(weather2);
         mockMvc.perform(put("/api/weather")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson2))
@@ -167,7 +168,7 @@ public class WeatherRestTest extends RestTest {
     }
 
     @Test
-    public void testActualWeather() throws Exception{
+    public void testActualWeather() throws Exception {
         Integer townId = 10;
         given(weatherService.existsByTownId(townId)).willReturn(false);
 
@@ -184,26 +185,26 @@ public class WeatherRestTest extends RestTest {
     }
 
     @Test
-    public void testAverageWeather() throws Exception{
+    public void testAverageWeather() throws Exception {
         Integer townId = 12;
-        String period = "day";
+        MongoWeatherService.Period period = MongoWeatherService.Period.valueOf("day");
         given(weatherService.existsByTownId(townId)).willReturn(false);
         mockMvc.perform(get("/api/average-weather/{townId}", townId)
-                .param("period", period))
+                .param("period", period.toString()))
                 .andExpect(status().isBadRequest());
 
-        WeatherAverage weatherAvg = new WeatherAverage(80, 100, (float)85.7, (float)12.6, (float)80.2);
+        WeatherAverage weatherAvg = new WeatherAverage(80, 100, (float) 85.7, (float) 12.6, (float) 80.2);
         given(weatherService.existsByTownId(townId)).willReturn(true);
         given(weatherService.getAverage(townId, period)).willReturn(weatherAvg);
         String response = objectToJson(weatherAvg);
         mockMvc.perform(get("/api/average-weather/{townId}", townId)
-                .param("period", period))
+                .param("period", period.toString()))
                 .andExpect(status().isOk()).andExpect(content().json(response));
 
         given(weatherService.existsByTownId(townId)).willReturn(true);
         given(weatherService.getAverage(townId, period)).willReturn(null);
         mockMvc.perform(get("/api/average-weather/{townId}", townId)
-                .param("period", period))
+                .param("period", period.toString()))
                 .andExpect(status().isNotFound());
     }
 }

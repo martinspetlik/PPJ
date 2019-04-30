@@ -3,8 +3,10 @@ package tul.semestralka.data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "town")
@@ -14,11 +16,12 @@ public class Town {
     private int id;
 
     @Column(name = "name")
+    @Size(min = 1, max = 100)
     private String name;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name="code")
+    @JoinColumn(name = "code")
     private Country country;
 
     @Transient
@@ -30,7 +33,8 @@ public class Town {
         this.country = country;
     }
 
-    public Town(){}
+    public Town() {
+    }
 
     public Town(int id, Country country, String name) {
         this.id = id;
@@ -75,7 +79,7 @@ public class Town {
         if (this == obj)
             return true;
         if (obj == null)
-            return false;
+            throw new NullPointerException("Object is null");
         if (getClass() != obj.getClass())
             return false;
         Town other = (Town) obj;

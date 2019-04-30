@@ -14,6 +14,7 @@ import tul.semestralka.data.Country;
 import tul.semestralka.data.Town;
 import tul.semestralka.data.Weather;
 import tul.semestralka.service.MongoWeatherService;
+
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -36,7 +37,10 @@ public class WeatherUpdateTest {
         Town town1 = new Town("Prague", country1);
         RateLimiter rt = RateLimiter.create(1);
         WeatherApi received = weatherUpdateService.updateWeather(town1, rt);
-        List<Weather> weathers =  weatherService.getAll();
+
+        List<Weather> weathers = weatherService.getAll();
+
+
         assertNotNull("Should not be null", received);
         assertNotEquals("Should not min float value", 0f, received.getMainWeather().getTemp());
         assertEquals(1, weathers.size());

@@ -18,7 +18,7 @@ public class TownsController {
 
     @GetMapping("/{countryName}")
     public String findByCode(@PathVariable String countryName, Model model) {
-        List<Town> towns =  townService.getTownsByCountryCode(countryName, true);
+        List<Town> towns = townService.getTownsByCountryCode(countryName, true);
 
         model.addAttribute("townsData", towns);
         return "towns";

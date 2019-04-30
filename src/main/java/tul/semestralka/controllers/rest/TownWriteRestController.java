@@ -6,13 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tul.semestralka.data.Town;
 
-@ConditionalOnProperty(value = "readOnlyMode", matchIfMissing=true, havingValue="false")
+@ConditionalOnProperty(value = "readOnlyMode", matchIfMissing = true, havingValue = "false")
 @RestController
-public class TownWriteRestController extends TownRestController{
+public class TownWriteRestController extends TownRestController {
 
     @PostMapping(value = TOWN_PATH)
     public ResponseEntity<Object> createTown(@RequestBody Town town) {
-
         if (town.getCountry() == null) {
             Message er = new Message("Town must contains country e.g. {'title': 'Czech Republic', 'code': 'cz'}: " + town);
             return new ResponseEntity<>(er, HttpStatus.BAD_REQUEST);
@@ -22,37 +21,24 @@ public class TownWriteRestController extends TownRestController{
             Message er = new Message("Town already exists: " + town);
             return new ResponseEntity<>(er, HttpStatus.BAD_REQUEST);
         } else {
-            if (town.getCountry() == null || !countryService.exists(town.getCountry())) {
-                Message er = new Message("Not valid country, add this country first: " + town.getCountry());
-                return new ResponseEntity<>(er, HttpStatus.BAD_REQUEST);
-            } else {
-                townService.create(town);
-                if (townService.exists(town)) {
-                    return new ResponseEntity<>(town, HttpStatus.OK);
-                } else {
-                    Message er = new Message("Failed to create town: " + town);
-                    return new ResponseEntity<>(er, HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
+            return changeOrSaveTown(town);
         }
     }
 
     @PutMapping(value = TOWN_PATH)
     public ResponseEntity<Object> updateTown(@RequestBody Town town) {
-        Town changedTown = townService.getTown(town.getId());
-        if (changedTown == null) {
-            Message m = new Message("Town does not exist, use POST method");
-            return new ResponseEntity<>(m, HttpStatus.BAD_REQUEST);
+
+        if (town.getCountry() == null) {
+            Message er = new Message("Town must contains country e.g. {'title': 'Czech Republic', 'code': 'cz'}: " + town);
+            return new ResponseEntity<>(er, HttpStatus.BAD_REQUEST);
         }
-        townService.update(town);
-        changedTown = townService.getTown(town.getId());
-        Message m = new Message("Changed town:" + changedTown);
-        return new ResponseEntity<>(m, HttpStatus.OK);
+
+        return changeOrSaveTown(town);
     }
 
     @DeleteMapping(value = TOWN_PATH + "/{townId}")
     public ResponseEntity<Object> deleteTown(@PathVariable("townId") Integer townId) {
-        Town town = townService.getTown(townId);
+        Town town = townService.getTownById(townId);
         if (!townService.exists(town)) {
             Message er = new Message("Town doesn't exist: " + town);
             return new ResponseEntity<>(er, HttpStatus.BAD_REQUEST);
@@ -68,4 +54,22 @@ public class TownWriteRestController extends TownRestController{
             }
         }
     }
+
+    private ResponseEntity<Object> changeOrSaveTown(Town town) {
+        if (town.getCountry() == null || !countryService.exists(town.getCountry())) {
+            Message er = new Message("Not valid country, add this country first: " + town.getCountry());
+            return new ResponseEntity<>(er, HttpStatus.BAD_REQUEST);
+        } else {
+            townService.create(town);
+
+            if (townService.exists(town)) {
+                town = townService.getTown(town);
+                return new ResponseEntity<>(town, HttpStatus.OK);
+            } else {
+                Message er = new Message("Failed to create town: " + town);
+                return new ResponseEntity<>(er, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
 }

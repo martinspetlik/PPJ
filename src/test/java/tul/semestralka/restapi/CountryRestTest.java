@@ -14,9 +14,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import tul.semestralka.data.Country;
 import tul.semestralka.data.Town;
 import tul.semestralka.service.CountryService;
+
 import static org.mockito.BDDMockito.given;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,7 +50,7 @@ public class CountryRestTest extends RestTest {
         mockMvc.perform(get("/api/countries"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{'title': 'Czech Republic', 'code': 'cz'}," +
-                                                     " {'title': 'Slovakia', 'code': 'sk'}]"));
+                        " {'title': 'Slovakia', 'code': 'sk'}]"));
     }
 
     @Test
@@ -69,15 +72,15 @@ public class CountryRestTest extends RestTest {
 
 
         given(countryService.exists(country4)).willReturn(false);
-        given(countryService.validData(country4)).willReturn(false);
+        given(countryService.existsCodeForCountryName(country4)).willReturn(false);
         mockMvc.perform(post("/api/country", country4))
                 .andExpect(status().isBadRequest());
 
 
         given(countryService.exists(country1)).willReturn(false).willReturn(true);
-        given(countryService.validData(country1)).willReturn(true);
+        given(countryService.existsCodeForCountryName(country1)).willReturn(true);
 
-        String requestJson=objectToJson(country1);
+        String requestJson = objectToJson(country1);
 
         mockMvc.perform(post("/api/country/")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -108,12 +111,16 @@ public class CountryRestTest extends RestTest {
 
     @Test
     public void testUpdateCountry() throws Exception {
-        given(countryService.getCountry(country3.getCode())).willReturn(country3);
-        String requestJson=objectToJson(country3);
-        mockMvc.perform(put("/api/country")
+        given(countryService.exists(country1)).willReturn(true).willReturn(true);
+        given(countryService.existsCodeForCountryName(country1)).willReturn(true);
+
+        String requestJson = objectToJson(country1);
+
+        mockMvc.perform(put("/api/country/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json("{'title': 'Czech Republic', 'code': 'cz'}"));
     }
 
 }

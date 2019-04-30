@@ -1,4 +1,5 @@
 package tul.semestralka.controllers.rest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +10,7 @@ import tul.semestralka.data.Town;
 import java.util.List;
 
 @RestController
-public class TownReadRestController extends TownRestController{
+public class TownReadRestController extends TownRestController {
 
     @GetMapping(value = TOWNS_PATH)
     public ResponseEntity<List<Town>> getTowns() {
@@ -19,7 +20,7 @@ public class TownReadRestController extends TownRestController{
 
     @GetMapping(value = TOWN_PATH + "/{townId}")
     public ResponseEntity<Object> getTown(@PathVariable("townId") Integer townId) {
-        Town town = townService.getTown(townId);
+        Town town = townService.getTownById(townId);
         if (town != null) {
             return new ResponseEntity<>(town, HttpStatus.OK);
         } else {

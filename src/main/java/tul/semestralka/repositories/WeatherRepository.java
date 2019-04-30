@@ -14,6 +14,7 @@ import java.util.List;
 public interface WeatherRepository extends MongoRepository<Weather, ObjectId> {
 
     List<Weather> findByTime(Long time, Pageable pageable);
+
     List<Weather> findByTownId(Integer townId, Sort sort);
 
     @Override

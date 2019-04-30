@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class MongoWeatherService{
+public class MongoWeatherService {
 
     @Autowired
     private WeatherRepository weatherRepository;
@@ -28,8 +28,11 @@ public class MongoWeatherService{
     @Value("${weather.expiration}")
     private int expiration;
 
+    public enum Period {day, week, fortnight}
+
     @Autowired
-    public MongoWeatherService(){}
+    public MongoWeatherService() {
+    }
 
     public Weather find(ObjectId objectId) {
         return weatherRepository.findById(objectId).orElse(null);
@@ -41,8 +44,7 @@ public class MongoWeatherService{
         weatherRepository.insert(weather);
     }
 
-    public List<Weather> getAll()
-    {
+    public List<Weather> getAll() {
         return weatherRepository.findAll();
     }
 
@@ -60,10 +62,11 @@ public class MongoWeatherService{
         return weatherRepository.findByTownId(townId, sort);
     }
 
-    public void update(Weather weather){weatherRepository.save(weather);
+    public void update(Weather weather) {
+        weatherRepository.save(weather);
     }
 
-    public boolean exists(Weather weather){
+    public boolean exists(Weather weather) {
         if (weather == null) return false;
         if (weather.getId() != null) {
             return weatherRepository.existsById(weather.getId());
@@ -80,24 +83,31 @@ public class MongoWeatherService{
         return weatherRepository.findFirstByTownIdOrderByTimeDesc(townId);
     }
 
-    public WeatherAverage getAverage(Integer townId, String period) {
+    public WeatherAverage getAverage(Integer townId, Period period) {
 
-        ZonedDateTime fromTime = ZonedDateTime.now();
+        ZonedDateTime fromTime;
 
-        if (period.equals("day") ) {
-            fromTime = ZonedDateTime.now().minusDays(1);
-        } else if (period.equals("week")){
-            fromTime = ZonedDateTime.now().minusWeeks(1);
-        } else if (period.equals("fortnight")) {
-            fromTime = ZonedDateTime.now().minusWeeks(2);
+        switch (period) {
+            case day:
+                fromTime = ZonedDateTime.now().minusDays(1);
+                break;
+            case week:
+                fromTime = ZonedDateTime.now().minusWeeks(1);
+                break;
+            case fortnight:
+                fromTime = ZonedDateTime.now().minusWeeks(2);
+                break;
+            default:
+                fromTime = ZonedDateTime.now().minusMonths(1);
         }
 
+
         GroupOperation group = Aggregation.group("townId")
-                                .avg("humidity").as("humidityAvg")
-                                .avg("pressure").as("pressureAvg")
-                                .avg("temp").as("tempAvg")
-                                .avg("windDegree").as("windDegreeAvg")
-                                .avg("windSpeed").as("windSpeedAvg");
+                .avg("humidity").as("humidityAvg")
+                .avg("pressure").as("pressureAvg")
+                .avg("temp").as("tempAvg")
+                .avg("windDegree").as("windDegreeAvg")
+                .avg("windSpeed").as("windSpeedAvg");
 
         MatchOperation match = Aggregation.match(new Criteria("time").gt(fromTime).and("townId").is(townId));
         ProjectionOperation projection = Aggregation.project("tempAvg", "humidityAvg", "pressureAvg", "windDegreeAvg", "windSpeedAvg");

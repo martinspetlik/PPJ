@@ -14,10 +14,12 @@ import tul.semestralka.data.Country;
 import tul.semestralka.data.Town;
 import tul.semestralka.service.CountryService;
 import tul.semestralka.service.TownService;
+
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,7 +53,7 @@ public class TownRestTest extends RestTest {
         List<Town> towns = Arrays.asList(town1, town2);
         given(townService.getTowns()).willReturn(towns);
 
-        String responseJson=objectToJson(towns);
+        String responseJson = objectToJson(towns);
 
         mockMvc.perform(get("/api/towns"))
                 .andExpect(status().isOk())
@@ -60,9 +62,9 @@ public class TownRestTest extends RestTest {
 
     @Test
     public void testGetTown() throws Exception {
-        given(townService.getTown(town1.getId())).willReturn(town1);
+        given(townService.getTownById(town1.getId())).willReturn(town1);
 
-        String responseJson=objectToJson(town1);
+        String responseJson = objectToJson(town1);
 
         mockMvc.perform(get("/api/town/{id}", town1.getId()))
                 .andExpect(status().isOk())
@@ -86,8 +88,9 @@ public class TownRestTest extends RestTest {
 
         given(townService.exists(town1)).willReturn(false).willReturn(true);
         given(countryService.exists(town1.getCountry())).willReturn(true);
+        given(townService.getTown(town1)).willReturn(town1);
 
-        String requestJson=objectToJson(town1);
+        String requestJson = objectToJson(town1);
 
         mockMvc.perform(post("/api/town")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +102,7 @@ public class TownRestTest extends RestTest {
 
     @Test
     public void testDeleteTown() throws Exception {
-        given(townService.getTown(town2.getId())).willReturn(town2);
+        given(townService.getTownById(town2.getId())).willReturn(town2);
         given(townService.exists(town2)).willReturn(true);
 
         mockMvc.perform(delete("/api/town/{townId}", town2.getId())
@@ -108,7 +111,7 @@ public class TownRestTest extends RestTest {
 
 
         // Test country with town
-        given(townService.getTown(town3.getId())).willReturn(town3);
+        given(townService.getTownById(town3.getId())).willReturn(town3);
         mockMvc.perform(delete("/api/town/{townId}", -1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -116,19 +119,25 @@ public class TownRestTest extends RestTest {
     }
 
     @Test
-    public void testUpdateTown() throws Exception{
-        given(townService.getTown(town1.getId())).willReturn(null);
-        String requestJson=objectToJson(town1);
+    public void testUpdateTown() throws Exception {
+        given(townService.getTownById(town1.getId())).willReturn(null);
+        String requestJson = objectToJson(town1);
         mockMvc.perform(put("/api/town")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
                 .andExpect(status().isBadRequest());
 
-        given(townService.getTown(town1.getId())).willReturn(town1);
-        String requestJson2=objectToJson(town1);
+
+        given(townService.exists(town1)).willReturn(true).willReturn(true);
+        given(countryService.exists(town1.getCountry())).willReturn(true);
+        given(townService.getTown(town1)).willReturn(town1);
+
+        String requestJson2 = objectToJson(town1);
+
         mockMvc.perform(put("/api/town")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson2))
-                .andExpect(status().isOk());
+                .content(requestJson))
+                .andExpect(status().isOk())
+                .andExpect(content().json(requestJson2));
     }
 }

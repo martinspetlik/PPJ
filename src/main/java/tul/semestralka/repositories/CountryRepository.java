@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface CountryRepository extends CrudRepository<Country, String> {
 
     boolean existsByTitle(String title);
+
     boolean existsByCode(String code);
 }

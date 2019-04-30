@@ -18,6 +18,7 @@ public class WeatherApi {
     public MainWeather getMainWeather() {
         return main;
     }
+
     public Wind getWind() {
         return wind;
     }
@@ -30,28 +31,25 @@ public class WeatherApi {
                 '}';
     }
 
-    public float getTemp(){
+    public float getTemp() {
         return main.getTemp();
     }
 
-    public float getPressure()
-    {
+    public float getPressure() {
         return main.getPressure();
     }
 
-    public float getHumidity(){
+    public float getHumidity() {
         return main.getHumidity();
     }
 
-    public float getWindSpeed(){
+    public float getWindSpeed() {
         return wind.getSpeed();
     }
 
-    public float getWindDegree(){
+    public float getWindDegree() {
         return wind.getDegree();
     }
-
-
 
 
 }

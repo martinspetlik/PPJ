@@ -6,7 +6,6 @@ import tul.semestralka.data.Country;
 import org.springframework.beans.factory.annotation.Autowired;
 import tul.semestralka.data.Weather;
 import tul.semestralka.repositories.TownRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,8 +38,7 @@ public class TownService {
     }
 
     public boolean exists(Town town) {
-        if (town == null)
-        {
+        if (town == null) {
             return false;
         }
         if (town.getCountry() != null) {
@@ -48,6 +46,10 @@ public class TownService {
         } else {
             return townRepository.existsByName(town.getName());
         }
+    }
+
+    public Town getTown(Town town) {
+        return townRepository.getByNameAndCountry(town.getName(), town.getCountry());
     }
 
     public void delete(Town town) {
@@ -58,50 +60,42 @@ public class TownService {
         townRepository.deleteAll();
     }
 
-    public Town getTown(Integer id) {
+    public Town getTownById(Integer id) {
         return townRepository.findById(id).orElse(null);
     }
 
     public List<Town> getTownsByCountry(Country country) {
 
         if (country == null) {
-            return null;
+            throw new NullPointerException("Country is null");
         }
 
         List<Town> towns = townRepository.findByCountry(country);
-
-        if (towns.size() == 0) {
-            return null;
-        }
-
         return towns;
     }
 
     public List<Town> getTownsByName(String name) {
 
         if (name == null) {
-            return null;
+            throw new NullPointerException("Name is null");
         }
 
         List<Town> towns = townRepository.findByName(name);
-
-        if (towns.size() == 0) {
-            return null;
-        }
-
         return towns;
     }
 
-    public List<Town> getTownsByCountryCode(String code, boolean addLastWeather) {
+    public ArrayList<Town> getTownsByCountryCode(String code, boolean addLastWeather) {
+
+        ArrayList<Town> towns = new ArrayList<Town>();
 
         if (code.isEmpty()) {
-            return null;
+            return towns;
         }
 
-        List<Town> towns = townRepository.getByCountryCode(code);
+        towns = (ArrayList) townRepository.getByCountryCode(code);
 
         if (towns.size() == 0) {
-            return null;
+            return towns;
         }
 
 
@@ -109,8 +103,7 @@ public class TownService {
         ArrayList<Town> townsWithWeather = new ArrayList<Town>();
 
         // Add weather to town
-        for (Town town : towns)
-        {
+        for (Town town : towns) {
             if (addLastWeather) {
                 // Actual weather
                 Weather townWeathers = weatherService.getActual(town.getId());

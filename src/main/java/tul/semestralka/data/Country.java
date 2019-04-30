@@ -1,21 +1,30 @@
 package tul.semestralka.data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 import com.neovisionaries.i18n.CountryCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 
 @Entity
 @Table(name = "country")
-public class Country{
+public class Country {
 
-    @Column(name ="title")
+    @Column(name = "title")
+    @Size(min = 1, max = 100)
     private String title;
 
     @Id
-    @Column(name ="code")
+    @Column(name = "code")
+    @Size(min = 2, max = 3)
     private String code;
+
+    @Transient
+    private static final Logger logger = LoggerFactory.getLogger(Country.class);
 
     public Country() {
 
@@ -29,12 +38,11 @@ public class Country{
     public Country(String title, String code) {
         this.title = title;
 
-        if (code.equals(this.getCodeFromTitle(title))){
+        if (code.equals(this.getCodeFromTitle(title))) {
             this.code = code;
         } else {
-
-            System.out.println("Country code is not valid ISO 3166 code " + code);
-            System.out.println("ISO code " + this.getCodeFromTitle(title));
+            logger.info("Country code is not valid ISO 3166 code " + code);
+            logger.info("ISO code " + this.getCodeFromTitle(title));
         }
 
     }
@@ -90,15 +98,13 @@ public class Country{
         return "Country [title=" + title + ", code=" + code + "]";
     }
 
-    public String getCodeFromTitle(String title)
-    {
+    public String getCodeFromTitle(String title) {
         List<CountryCode> possibleCodes = CountryCode.findByName(title);
 
         if (possibleCodes.size() > 0) {
             return possibleCodes.get(0).toString().toLowerCase();
-        }
-        else {
-            return null;
+        } else {
+            return "";
         }
     }
 }
